@@ -1,0 +1,32 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredIdentifiers">
+        <list>
+          <option value="handlers.client.Distpather" />
+          <option value="handlers.callback.Dispather" />
+          <option value="handlers.extra.Dispather" />
+          <option value="handlers.callback.button_call_2" />
+          <option value="handlers.extra.message" />
+          <option value="handlers.admin.ban" />
+          <option value="handlers.extra.bad_words" />
+          <option value="handlers.extra.bot_send_message" />
+          <option value="handlers.fsmAdminMenu.curren_state" />
+          <option value="handlers.fsmAdminMenu.state" />
+          <option value="database.bot_dp.db" />
+          <option value="database.bot_dp.turtle" />
+          <option value="main.bot_db" />
+          <option value="database.bot_db" />
+          <option value="database.bot_db.menu" />
+          <option value="test.register_message_handler" />
+          <option value="handlers.notification" />
+          <option value="handlers.client.perser" />
+          <option value="decouple.config" />
+          <option value="main.on_startup" />
+        </list>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="requirements.ReferenceExistsInspection" enabled="true" level="WARNING" enabled_by_default="true" />
+  </profile>
+</component>
