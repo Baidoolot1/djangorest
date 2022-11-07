@@ -14,6 +14,10 @@ def director_view(request):
         serializer = DirectorListSerializer(directors, many=True)
         return Response(data=serializer.data)
     else:
+        serializers = DirectorCreateSerializer(data=request.data)
+        if not serializers.is_valid():
+            return Response(data={'errors': serializers.errors},
+                            status=status.HTTP_406_NOT_ACCEPTABLE)
         name = request.data.get('name', '')
         print(name)
         director = Director.objects.create(
@@ -54,6 +58,11 @@ def Movie_view(request):
         serializer = MovieSerializers(movie, many=True)
         return Response(data=serializer.data)
     else:
+        serializer = ReviewCreateSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(status=status.HTTP_406_NOT_ACCEPTABLE,
+                            data={'message': 'data with errors',
+                                    'errors': serializer.errors})
         title = request.data.get('title' '')
         description = request.data.get('description')
         duration = request.data.get('duration')
@@ -99,6 +108,10 @@ def Review_view(request):
         serializer = ReviewSerializer(reviews, many=True)
         return Response(data=serializer.data)
     else:
+        serializers = ReviewCreateSerializer(data=request.data)
+        if not serializers.is_valid():
+            return Response(data={'errors': serializers.errors},
+                            status=status.HTTP_406_NOT_ACCEPTABLE)
         reviews = Review.objects.create(
             text=request.data.get('text'), stars=request.data.get('stars'), movie_id=request.data.get('movie_id')
         )
