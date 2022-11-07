@@ -1,4 +1,6 @@
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
+
 from .models import Movie, Director, Review
 
 
@@ -10,6 +12,7 @@ class DirectorSerializers(serializers.ModelSerializer):
 
 class DirectorListSerializer(serializers.ModelSerializer):
     movies_count = serializers.SerializerMethodField()
+
     class Meta:
         model = Director
         fields = 'id name movies_count'.split()
@@ -24,10 +27,25 @@ class MovieSerializers(serializers.ModelSerializer):
         fields = 'title reviews duration description'.split()
 
 
-class ReviewSerializers(serializers.ModelSerializer):
+class MovieBaseValidateSerializer(serializers.Serializer):
+    title = serializers.CharField(max_length=255)
+    description = serializers.CharField(allow_null=True, allow_blank=True)
+    duration = serializers.CharField(allow_blank=True, allow_null=True)
+    director_id = serializers.IntegerField(min_value=1)
+
+
+class MovieCreateSerializer(MovieBaseValidateSerializer):
+
+    def valdiate_director_id(self, director_id):
+        if Director.objects.filter(id=director_id):
+            raise ValidationError('error')
+        return director_id
+
+
+class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
-        fields = 'review_name text stars_str '.split()
+        fields = 'movie_id text stars movie_name'.split()
 
 
 # class Moview_ReviewSerializer(serializers.ModelSerializer):
@@ -36,16 +54,6 @@ class ReviewSerializers(serializers.ModelSerializer):
 #         model = Movie
 #         fields = 'title reviews'.split()
 
-class ReviewSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Review
-        fields = 'id text stars'.split()
-
-    def to_representation(self, instance):
-        show = super().to_representation(instance)
-        #show['movie'] = instance.movie.title
-
-        return show
 
 
 class MoviesReviewsListSerializer(serializers.ModelSerializer):
@@ -61,5 +69,3 @@ class MoviesReviewsListSerializer(serializers.ModelSerializer):
         for i in obj_movie.reviews.all():
             sum_ += int(i.stars)
         return round(sum_ / obj_movie.reviews.count(), 1) if obj_movie.reviews.count() else "This movie has no rating"
-
-
