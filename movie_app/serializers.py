@@ -39,7 +39,7 @@ class MovieBaseValidateSerializer(serializers.Serializer):
     title = serializers.CharField(max_length=255)
     description = serializers.CharField(allow_null=True, allow_blank=True)
     duration = serializers.CharField(allow_blank=True, allow_null=True)
-    director_id = serializers.IntegerField(min_value=1, required=False)
+    director_id = serializers.IntegerField()
 
 
 class MovieCreateSerializer(MovieBaseValidateSerializer):

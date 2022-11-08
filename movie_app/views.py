@@ -2,13 +2,14 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from .serializers import  *
+from .serializers import *
 from .models import Director, Movie, Review
 from rest_framework import status
 
 
 @api_view(['GET', 'POST'])
 def director_view(request):
+    print(request.user)
     if request.method == 'GET':
         directors = Director.objects.all()
         serializer = DirectorListSerializer(directors, many=True)
@@ -46,11 +47,6 @@ def Director_detail_view(request, id):
                         status=status.HTTP_204_NO_CONTENT)
 
 
-
-
-
-
-
 @api_view(['GET', 'POST'])
 def Movie_view(request):
     if request.method == 'GET':
@@ -58,22 +54,18 @@ def Movie_view(request):
         serializer = MovieSerializers(movie, many=True)
         return Response(data=serializer.data)
     else:
-        serializer = ReviewCreateSerializer(data=request.data)
+        serializer = MovieCreateSerializer(data=request.data)
         if not serializer.is_valid():
             return Response(status=status.HTTP_406_NOT_ACCEPTABLE,
                             data={'message': 'data with errors',
-                                    'errors': serializer.errors})
-        title = request.data.get('title' '')
-        description = request.data.get('description')
-        duration = request.data.get('duration')
-        director_id = request.data.get('director_id')
+                                  'errors': serializer.errors})
         movie = Movie.objects.create(
-            title=title, description=description, duration=duration, director_id=director_id,
+            title=request.data.get('title' ''),
+            description=request.data.get('description'),
+            duration=request.data.get('duration'),
+            director_id=request.data.get('director_id', '')
         )
-        movie.save()
         return Response(data=MovieSerializers(movie).data)
-
-
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
@@ -99,8 +91,6 @@ def Moview_detail_view(request, id):
                         status=status.HTTP_204_NO_CONTENT)
 
 
-
-
 @api_view(['GET', 'POST'])
 def Review_view(request):
     if request.method == 'GET':
@@ -117,9 +107,6 @@ def Review_view(request):
         )
         reviews.save()
         return Response(data=ReviewSerializer(reviews).data)
-
-
-
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
@@ -141,10 +128,7 @@ def Review_detail_view(request, id):
     else:
         review.delete()
         return Response(data={'Review': 'Review removed!'},
-                              status=status.HTTP_204_NO_CONTENT)
-
-
-
+                        status=status.HTTP_204_NO_CONTENT)
 
 
 @api_view(['GET'])
@@ -152,8 +136,3 @@ def movies_reviews_view(request):
     movies_reviews = Movie.objects.all()
     data = MoviesReviewsListSerializer(movies_reviews, many=True).data
     return Response(data=data)
-
-
-
-
-
